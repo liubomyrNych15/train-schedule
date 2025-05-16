@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth';
 import * as Joi from 'joi';
-import { TrainsModule } from './trains';
+import { TrainsModule } from './modules/trains';
 
 @Module({
     imports: [

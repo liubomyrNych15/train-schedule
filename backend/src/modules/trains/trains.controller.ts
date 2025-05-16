@@ -8,11 +8,13 @@ import {
     Patch,
     Query,
     UseGuards,
-    ParseUUIDPipe,    
+    ParseUUIDPipe,
 } from '@nestjs/common';
+
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { TrainsService } from './trains.service';
 import { CreateTrainDto, UpdateTrainDto } from './dto';
+import { QueryTrainsDto } from './dto/query-trains.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('trains')
@@ -20,14 +22,12 @@ export class TrainsController {
     constructor(private service: TrainsService) {}
 
     @Get()
-    findAll(@Query() query: any) {
+    findAll(@Query() query: QueryTrainsDto) {
         return this.service.findAll(query);
     }
 
     @Get(':id')
-    findOne(
-        @Param('id', new ParseUUIDPipe()) id: string, 
-    ) {
+    findOne(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.service.findOne(id);
     }
 
@@ -45,9 +45,7 @@ export class TrainsController {
     }
 
     @Delete(':id')
-    remove(
-        @Param('id', new ParseUUIDPipe()) id: string,
-    ) {
+    remove(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.service.remove(id);
     }
 }

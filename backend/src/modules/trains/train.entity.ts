@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Unique } from 'typeorm';
 
 @Entity()
-export class Train {
+@Unique(["name", "from", "to"])
+export class TrainEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 

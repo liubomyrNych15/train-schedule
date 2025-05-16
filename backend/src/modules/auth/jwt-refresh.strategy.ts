@@ -3,6 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 
+import { JwtPayload } from './interfaces/fdil';
+
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
   Strategy,
@@ -20,7 +22,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
         });
     }
 
-    validate(payload: any) {
+    validate(payload: JwtPayload) {
         return { id: payload.sub, username: payload.username };
     }
 }

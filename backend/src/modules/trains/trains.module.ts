@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Train } from './train.entity';
+
+import { TrainEntity } from './train.entity';
 import { TrainsService } from './trains.service';
 import { TrainsController } from './trains.controller';
+import { AuthModule } from '../auth';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Train])],
+    imports: [
+        AuthModule,        
+        TypeOrmModule.forFeature([TrainEntity]),
+    ],
     providers: [TrainsService],
     controllers: [TrainsController],
 })

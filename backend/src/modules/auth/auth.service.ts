@@ -7,13 +7,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from '../users/user.entity';
+
+import { UserEntity } from '../users/user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
-        @InjectRepository(User) private usersRepo: Repository<User>,
+        @InjectRepository(UserEntity) private usersRepo: Repository<UserEntity>,
         private jwtService: JwtService,
     ) {}
 
@@ -68,23 +69,23 @@ export class AuthService {
         return { accessToken, refreshToken };
     }
 
-  async refreshTokens(userId: string, refreshToken: string) {
-    const user = await this.usersRepo.findOne({ where: { id: userId } });
-    if (
-        !user ||
-        !user.refreshTokenHash ||
-        !(await this.compareHash(refreshToken, user.refreshTokenHash))
-    ) {
-      throw new UnauthorizedException('Invalid refresh token');
+    async refreshTokens(userId: string, refreshToken: string) {
+        const user = await this.usersRepo.findOne({ where: { id: userId } });
+        if (
+            !user ||
+            !user.refreshTokenHash ||
+            !(await this.compareHash(refreshToken, user.refreshTokenHash))
+        ) {
+        throw new UnauthorizedException('Invalid refresh token');
+        }
+
+        const tokens = await this.getTokens(user.id, user.username);
+
+        user.refreshTokenHash = await this.hashData(tokens.refreshToken);
+        await this.usersRepo.save(user);
+
+        return tokens;
     }
-
-    const tokens = await this.getTokens(user.id, user.username);
-
-    user.refreshTokenHash = await this.hashData(tokens.refreshToken);
-    await this.usersRepo.save(user);
-
-    return tokens;
-  }
 
     async logout(userId: string) {
         await this.usersRepo.update(userId, { refreshTokenHash: null });
